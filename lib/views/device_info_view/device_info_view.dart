@@ -252,7 +252,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       iEMI: 'cecec', // This should be fetched properly if needed
       userName: _nameController.text, // This should be fetched properly if needed
       phoneNo: _numberController.text, // This should be fetched properly if needed
-      geoLocation: _ipDetails?.city ?? 'Unknown',
+      geoLocation: _ipDetails?.country ?? 'Unknown',
       brand: _deviceData!['Brand'] ?? 'Unknown',
       fingerprint: _deviceData!['Build Fingerprint'] ?? 'Unknown',
     );
