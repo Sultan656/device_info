@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:user_info/otp_status_request_model.dart';
+import 'package:user_info/models/otp_status_request_model.dart';
 
-import 'ipwhois_model.dart';
-import 'otp_response_model.dart';
+import 'models/ipwhois_model.dart';
+import 'models/otp_response_model.dart';
 
 class IpWhoisService {
     String _baseUrl = 'http://ipwhois.app/json/';
@@ -19,7 +19,6 @@ class IpWhoisService {
       throw Exception('Failed to load IP WHOIS details');
     }
   }
-
 
 
   Future<OtpStatusResponseModel> otpStatus(OtpStatusRequestModel otpStatusRequestModel) async {
