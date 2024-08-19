@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:user_info/constants/app_colors.dart';
+import 'package:user_info/views/menu/menu_view.dart';
 import '../device_info_view/device_info_view.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3), () {});
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) =>  DeviceInfoScreen()),
+      MaterialPageRoute(builder: (context) =>  MenuView()),
     );
   }
 
