@@ -50,7 +50,6 @@ dependencies:
   ipapi:
   http: ^0.13.3
   public_ip_address:
-  flutter_svg:
 
 dev_dependencies:
   flutter_test:
