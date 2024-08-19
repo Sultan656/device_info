@@ -31,6 +31,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   String? _otpStatusResponse;
+  String? _changeIn;
   String? _errorMessage;
 
   @override
@@ -182,14 +183,14 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       androidID: _deviceData?['Android ID'] ?? 'Unknown',
       manufacturer: _deviceData?['Manufacturer'] ?? 'Unknown',
       modelNo: _deviceData?['Model'] ?? 'Unknown',
-      hardware: _deviceData?['Hardware'] ?? 'Unknown',
+      hardware: "nono" ?? 'Unknown',
       macAddress: _macAddress ?? 'Unknown',
       iEMI: 'imei', // This should be fetched properly if needed
       userName: _nameController.text,
       phoneNo: _numberController.text,
       emailId: _emailController.text ,
       city: _ipDetails?.city ?? 'Unknown',
-      geoLocation: _ipDetails?.country ?? 'Unknown',
+      geoLocation: "Shaman" ?? 'Unknown',
       brand: _deviceData?['Brand'] ?? 'Unknown',
       fingerprint: _deviceData?['Fingerprint'] ?? 'Unknown',
     );
@@ -199,6 +200,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       OtpStatusResponseModel response = await IpWhoisService().otpStatus(requestModel);
       setState(() {
         _otpStatusResponse = response.response;
+        _changeIn = response.changeIn;
 
       });
     } catch (e) {
@@ -320,6 +322,87 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                           ),
                           Text(
                             'OTP has not been sent',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if(_changeIn == 'device and geolocation change')
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 373.0,
+                    height: 60.0 ,
+                    decoration: BoxDecoration(border: Border.all(color: AppColors.redColor),
+                      color: AppColors.redColor.withOpacity(0.50),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Returning User / Geolocation and Device Info Changed',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'OTP has been sent',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if(_changeIn == 'device value changed')
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 373.0,
+                    height: 60.0 ,
+                    decoration: BoxDecoration(border: Border.all(color: AppColors.redColor),
+                      color: AppColors.redColor.withOpacity(0.50),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Returning User / Device Info Changed',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'OTP has been sent',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if(_changeIn == 'geolocation')
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 373.0,
+                    height: 60.0 ,
+                    decoration: BoxDecoration(border: Border.all(color: AppColors.redColor),
+                      color: AppColors.redColor.withOpacity(0.50),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Returning User / GEO Location Changed',
+                            style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'OTP has been sent',
                             style:  TextStyle(fontSize: 12,color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ],
