@@ -11,7 +11,8 @@ class OtpStatusRequestModel {
   String? iEMI;
   String? userName;
   String? phoneNo;
-
+  String? emailId;
+  String? city;
   OtpStatusRequestModel(
       {this.brand,
         this.manufacturer,
@@ -24,7 +25,10 @@ class OtpStatusRequestModel {
         this.macAddress,
         this.iEMI,
         this.userName,
-        this.phoneNo});
+        this.phoneNo,
+      this.emailId,
+        this.city,
+      });
 
   OtpStatusRequestModel.fromJson(Map<String, dynamic> json) {
     brand = json['Brand'];
@@ -39,6 +43,8 @@ class OtpStatusRequestModel {
     iEMI = json['IEMI'];
     userName = json['UserName'];
     phoneNo = json['PhoneNo'];
+    emailId = json['EmailId'];
+    city = json['City'];
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +61,8 @@ class OtpStatusRequestModel {
     data['IEMI'] = this.iEMI;
     data['UserName'] = this.userName;
     data['PhoneNo'] = this.phoneNo;
+    data['EmailId'] = this.emailId;
+    data['City'] = this.city;
     return data;
   }
 }

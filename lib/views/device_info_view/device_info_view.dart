@@ -28,6 +28,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
   IpWhoIsModel? _ipDetails;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
   String? _otpStatusResponse;
   String? _errorMessage;
 
@@ -185,7 +187,9 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       iEMI: 'imei', // This should be fetched properly if needed
       userName: _nameController.text,
       phoneNo: _numberController.text,
-      geoLocation: _country ?? 'Unknown',
+      emailId: _emailController.text ,
+      city: _ipDetails?.city ?? 'Unknown',
+      geoLocation: _ipDetails?.country ?? 'Unknown',
       brand: _deviceData?['Brand'] ?? 'Unknown',
       fingerprint: _deviceData?['Fingerprint'] ?? 'Unknown',
     );
@@ -278,6 +282,11 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                 controller: _numberController,
                 title: 'Phone No',
                 keyboardType: TextInputType.phone,
+              ),
+              appTextField(
+                controller: _emailController,
+                title: 'Email',
+                keyboardType: TextInputType.name,
               ),
               const SizedBox(height: 22.0,),
               appButton(
