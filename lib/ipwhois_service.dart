@@ -28,7 +28,7 @@ class IpWhoisService {
     // Perform the HTTP POST request
 
     final response = await http.post(
-      Uri.parse('http://34.18.47.112:9090/check_user'),
+      Uri.parse('http://34.18.47.112:8000/check_user'),
 
       body: body,
         headers: {'Content-Type': 'application/json',
