@@ -6,10 +6,10 @@ Widget appButton({VoidCallback? onTap,String? title}){
    onTap: onTap,
    child: Container(
      height: 40,
-     width: 360,
+     width: 373,
      decoration: BoxDecoration(
        color: AppColors.appButtonColor,
-       borderRadius: BorderRadius.circular(1.0),
+       borderRadius: BorderRadius.circular(4.0),
 
      ),
      child: Center(child: Text(title!,style: TextStyle(color: AppColors.appBgColor,fontWeight: FontWeight.w500,fontSize: 12.0),),),

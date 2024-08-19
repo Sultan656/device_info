@@ -24,19 +24,20 @@ class IpWhoisService {
   Future<OtpStatusResponseModel> otpStatus(OtpStatusRequestModel otpStatusRequestModel) async {
     // Serialize the request model to JSON
     final body = json.encode(otpStatusRequestModel);
-    // int contentLength = body.length;
+    int contentLength = body.length;
     // Perform the HTTP POST request
 
     final response = await http.post(
-      Uri.parse('http://34.18.47.112:8000/check_user/'),
+      Uri.parse('http://34.18.47.112:9090/check_user'),
 
       body: body,
         headers: {'Content-Type': 'application/json',
-          //'Content-Length': contentLength.toString(),
+          'Content-Length': contentLength.toString(),
         }
 
     );
     print("status:=======${response.body}");
+    print("statusCode====${response.statusCode}");
     // Check if the response status is OK
     if (response.statusCode == 200) {
 
