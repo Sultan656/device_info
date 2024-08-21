@@ -1,10 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:user_info/constants/app_colors.dart';
 
-Widget appTextField(
-    {String? title,
-    TextEditingController? controller,
-    TextInputType? keyboardType}) {
+Widget appTextField({
+  String? title,
+  TextEditingController? controller,
+  TextInputType? keyboardType,
+  FocusNode? focusNode,
+  Function(String)? onFieldSubmitted,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -13,25 +17,29 @@ Widget appTextField(
         child: Text(
           title!,
           style: const TextStyle(
-              color: AppColors.blackColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13.0),
+            color: AppColors.blackColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 13.0,
+          ),
         ),
       ),
-      // const SizedBox(
-      //   height: 2.0,
-      // ),
-       SizedBox(height: 45.0,
+      SizedBox(
+        height: 45.0,
         width: 373,
         child: TextFormField(
           controller: controller,
-
-          decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 3.0,horizontal: 12.0),
-              focusedBorder:OutlineInputBorder( borderSide: BorderSide(width: 1, color: AppColors.appButtonColor)) ,
-              enabledBorder: OutlineInputBorder( borderSide: BorderSide(width: 1, color: AppColors.textFieldOutline)),
-         //border: OutlineInputBorder(borderSide:BorderSide(width: 1, color: AppColors.appButtonColor) )
-          ),
           keyboardType: keyboardType,
+          focusNode: focusNode,
+          onFieldSubmitted: onFieldSubmitted,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 12.0),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: AppColors.appButtonColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: AppColors.textFieldOutline),
+            ),
+          ),
         ),
       ),
     ],

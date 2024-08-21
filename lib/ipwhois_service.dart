@@ -75,8 +75,6 @@ class IpWhoisService {
         }
 
     );
-    print("status:=======${response.body}");
-    print("statusCode====${response.statusCode}");
     // Check if the response status is OK
     if (response.statusCode == 200) {
 
