@@ -8,4 +8,5 @@ class AppColors {
   static const textFieldOutline = Color(0xffCCCCCC);
   static const tableBgColor = Color(0xffF5F5F5);
   static const redColor = Color(0xffFF0000);
+  static const purpleColor = Color(0xff262262);
 }
