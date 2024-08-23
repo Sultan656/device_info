@@ -50,6 +50,8 @@ dependencies:
   ipapi:
   http: ^0.13.3
   public_ip_address:
+  webauthn:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

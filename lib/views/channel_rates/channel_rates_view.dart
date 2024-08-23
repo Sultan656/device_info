@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:user_info/constants/app_colors.dart';
 import 'package:user_info/ipwhois_service.dart';
 import 'package:user_info/models/get_all_channel_price.dart';
 import 'package:user_info/models/update_channel_price.dart';
+import 'package:user_info/views/menu/menu_view.dart';
 import 'package:user_info/widgets/app_button.dart';
 import 'package:user_info/widgets/app_textfield.dart';
 
@@ -130,14 +132,34 @@ class _ChannelRatesViewState extends State<ChannelRatesView> {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 6.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40.0),
+
                 //app logo at the top on the screen
-                Image.asset('assets/images/app_logo.png', height: 33.0, width: 131.0),
-                const SizedBox(height: 20.0),
+                Row(
+                  children: [
+                    InkWell(
+                        onTap:(){
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) =>  const MenuView()),
+                          );
+                        },
+                        child: Image.asset('assets/images/arrow_back.png', width: 30, height: 30)),
+                    const Spacer(),
+                    Image.asset('assets/images/app_logo.png', width: 131, height: 33),
+                    const Spacer(flex: 2,),
+                  ],
+                ),
+
+                const SizedBox(height: 40.0),
+                const Text('Channel Rates',style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.blackColor)),
+                const SizedBox(height: 7.0),
+
+
                 //use custom text fields for price channels
                 appTextField(controller: _smsController, title: 'SMS'),
                 appTextField(controller: _whatsAppController, title: 'WhatsApp'),
