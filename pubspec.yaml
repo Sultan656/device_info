@@ -52,7 +52,8 @@ dependencies:
   public_ip_address:
   webauthn:
   shared_preferences:
-
+  get_phone_number:
+  sms_autofill:
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,24 +1,16 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:ip_country_lookup/ip_country_lookup.dart';
-import 'package:ip_country_lookup/models/ip_country_data_model.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:user_info/constants/app_colors.dart';
-import 'package:user_info/constants/web_authn.dart';
 import 'package:user_info/ipwhois_service.dart';
 import 'package:user_info/models/ipwhois_model.dart';
 import 'package:user_info/models/otp_response_model.dart';
 import 'package:user_info/models/otp_status_request_model.dart';
 import 'package:user_info/service/web_authn_service.dart';
-import 'package:user_info/views/channel_rates/channel_rates_view.dart';
 import 'package:user_info/views/menu/menu_view.dart';
 import 'package:user_info/widgets/app_button.dart';
 import 'package:user_info/widgets/app_textfield.dart';
-import 'package:webauthn/webauthn.dart';
 
 class DeviceInfoScreen extends StatefulWidget {
   const DeviceInfoScreen({super.key});
@@ -47,6 +39,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
   String? _errorMessage;
   bool _isLoading = false;
   String? authData;
+  String? _phoneNumber;
 
   @override
   void initState() {
@@ -69,9 +62,39 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
     await _fetchDeviceData();
     await _fetchNetworkData();
     await _fetchIpDetails();
-
+    await _initPhoneNumber();
   }
+  // Future<void> _fetchDeviceData() async {
+  //   //   final module = GetPhoneNumber();
+  //   //
+  //   //   if (!module.isSupport()) {
+  //   //     print('Not supported platform');
+  //   //   }
+  //   //
+  //   //   if (!await module.hasPermission()) {
+  //   //     if (!await module.requestPermission()) {
+  //   //       throw 'Failed to get permission phone number';
+  //   //     }
+  //   //   }
+  //   //
+  //   //   String phoneNumber = await module.getPhoneNumber();
+  //   //   print('getPhoneNumber result: $phoneNumber');
+  //   // }
 
+  Future<void> _initPhoneNumber() async {
+    String? phoneNumber;
+    try {
+      phoneNumber = await SmsAutoFill().hint;
+    } catch (e) {
+      phoneNumber = "Failed to get phone number: $e";
+    }
+    if (mounted) {
+      setState(() {
+        _phoneNumber = phoneNumber;
+        print("phoneNumber===================$_phoneNumber");
+      });
+    }
+  }
 
   Future<void> _fetchDeviceData() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -88,7 +111,9 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
         deviceData = {"Error": "Unsupported platform"};
       }
     } catch (e) {
-      deviceData = {"Error": "Failed to get platform version: '${e.toString()}'"};
+      deviceData = {
+        "Error": "Failed to get platform version: '${e.toString()}'"
+      };
     }
 
     if (mounted) {
@@ -103,8 +128,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
     String? macAddress;
 
     try {
-      macAddress = await info.getWifiBSSID(); // WiFi BSSID often serves as MAC address
-
+      macAddress =
+          await info.getWifiBSSID(); // WiFi BSSID often serves as MAC address
     } catch (e) {
       macAddress = "Error fetching MAC address";
     }
@@ -115,8 +140,6 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       });
     }
   }
-
-
 
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
     return {
@@ -155,7 +178,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       });
     } catch (e) {
       setState(() {
-        _ipDetails = IpWhoIsModel(ip: 'Error', country: 'Error'); // Use a placeholder on error
+        _ipDetails = IpWhoIsModel(
+            ip: 'Error', country: 'Error'); // Use a placeholder on error
       });
     }
   }
@@ -177,7 +201,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       iEMI: 'imei', // This should be fetched properly if needed
       userName: _nameController.text,
       phoneNo: _numberController.text,
-      emailId: _emailController.text ,
+      emailId: _emailController.text,
       city: _ipDetails?.city ?? 'Unknown',
       geoLocation: _ipDetails?.country ?? 'Unknown',
       brand: _deviceData?['Brand'] ?? 'Unknown',
@@ -185,14 +209,13 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
     );
 
     try {
-      OtpStatusResponseModel response = await IpWhoisService().otpStatus(requestModel);
+      OtpStatusResponseModel response =
+          await IpWhoisService().otpStatus(requestModel);
       setState(() {
         _otpStatusResponse = response.response;
         _changeIn = response.changeIn;
         _isLoading = false;
-
       });
-
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -216,7 +239,6 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
         ),
         Container(
           color: AppColors.tableBgColor,
-
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(value),
@@ -228,11 +250,13 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("phoneNumber===================$_phoneNumber");
+
     return Scaffold(
       backgroundColor: AppColors.appBgColor,
       body: SafeArea(
-        child: Stack(
-          children:[ SingleChildScrollView(
+        child: Stack(children: [
+          SingleChildScrollView(
             child: GestureDetector(
               onTap: () {
                 // This will dismiss the keyboard when tapping outside of a text field
@@ -240,7 +264,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -250,22 +275,30 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                         child: Row(
                           children: [
                             InkWell(
-                             onTap:(){
-                               Navigator.pushReplacement(
-                                 context,
-                                 MaterialPageRoute(builder: (context) =>  const MenuView()),
-                               );
-                             },
-                                child: Image.asset('assets/images/arrow_back.png', width: 30, height: 30)),
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MenuView()),
+                                  );
+                                },
+                                child: Image.asset(
+                                    'assets/images/arrow_back.png',
+                                    width: 30,
+                                    height: 30)),
                             const Spacer(),
-                            Image.asset('assets/images/app_logo.png', width: 131, height: 33),
-                            const Spacer(flex: 2,),
-
+                            Image.asset('assets/images/app_logo.png',
+                                width: 131, height: 33),
+                            const Spacer(
+                              flex: 2,
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10.0,),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
                     appTextField(
                         controller: _nameController,
                         title: 'Name',
@@ -273,8 +306,7 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                         focusNode: _nameFocus,
                         onFieldSubmitted: (term) {
                           _fieldFocusChange(context, _nameFocus, _numberFocus);
-                        }
-                    ),
+                        }),
                     appTextField(
                       controller: _numberController,
                       title: 'Phone No',
@@ -292,71 +324,95 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                         _emailFocus.unfocus();
                       },
                     ),
-                    const SizedBox(height: 22.0,),
+                    const SizedBox(
+                      height: 22.0,
+                    ),
                     appButton(
                       title: 'Verify User',
-                      onTap: (){
+                      onTap: () {
                         // This line dismisses the keyboard
                         FocusScope.of(context).unfocus();
 
                         _fetchOtpStatus();
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
                     ),
-                    const SizedBox(height: 10.0,),
-                    _otpStatusResponse != null ? (
-                        _otpStatusResponse == 'no send otp' ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: _buildInfoContainer(
-                            'Returning User',
-                            'OTP has not been sent',
-                            AppColors.appButtonColor,
-                          ),
-                        ) : _otpStatusResponse == 'send otp' ? (
-                            _changeIn == 'device and geolocation change' ? Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: _buildInfoContainer(
-                                'Returning User / Geolocation and Device Info Changed',
-                                'OTP has been sent',
-                                AppColors.redColor,
-                              ),
-                            ) : _changeIn == 'device value changed' ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: _buildInfoContainer(
-                                'Returning User / Device Info Changed',
-                                'OTP has been sent',
-                                AppColors.redColor,
-                              ),
-                            ) : _changeIn == 'geolocation' ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: _buildInfoContainer(
-                                'Returning User / GEO Location Changed',
-                                'OTP has been sent',
-                                AppColors.redColor,
-                              ),
-                            ) : const SizedBox.shrink()
-                        ) : _otpStatusResponse == 'new_user_send_otp' ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: _buildInfoContainer(
-                            'New User',
-                            'OTP has been sent',
-                            AppColors.redColor,
-                          ),
-                        ) : const SizedBox.shrink()
-                    ) : const SizedBox.shrink(),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    _otpStatusResponse != null
+                        ? (_otpStatusResponse == 'no send otp'
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: _buildInfoContainer(
+                                  'Returning User',
+                                  'OTP has not been sent',
+                                  AppColors.appButtonColor,
+                                ),
+                              )
+                            : _otpStatusResponse == 'send otp'
+                                ? (_changeIn == 'device and geolocation change'
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: _buildInfoContainer(
+                                          'Returning User / Geolocation and Device Info Changed',
+                                          'OTP has been sent',
+                                          AppColors.redColor,
+                                        ),
+                                      )
+                                    : _changeIn == 'device value changed'
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: _buildInfoContainer(
+                                              'Returning User / Device Info Changed',
+                                              'OTP has been sent',
+                                              AppColors.redColor,
+                                            ),
+                                          )
+                                        : _changeIn == 'geolocation'
+                                            ? Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: _buildInfoContainer(
+                                                  'Returning User / GEO Location Changed',
+                                                  'OTP has been sent',
+                                                  AppColors.redColor,
+                                                ),
+                                              )
+                                            : const SizedBox.shrink())
+                                : _otpStatusResponse == 'new_user_send_otp'
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: _buildInfoContainer(
+                                          'New User',
+                                          'OTP has been sent',
+                                          AppColors.redColor,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink())
+                        : const SizedBox.shrink(),
                     if (_errorMessage != null)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Error: $_errorMessage',
-                          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    const SizedBox(height: 16.0,),
-                    const Text("Device Information",style: TextStyle(fontSize: 14.0,fontWeight: FontWeight.w700),),
-                    const SizedBox(height: 10.0,),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    const Text(
+                      "Device Information",
+                      style: TextStyle(
+                          fontSize: 14.0, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0.0),
                       child: Table(
@@ -364,11 +420,13 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                           0: FlexColumnWidth(2),
                           1: FlexColumnWidth(3),
                         },
-                        border: TableBorder.all(color: AppColors.textFieldOutline, width: 1),
+                        border: TableBorder.all(
+                            color: AppColors.textFieldOutline, width: 1),
                         children: [
                           if (_deviceData != null)
                             ..._deviceData!.entries.map(
-                                  (entry) => _buildTableRow(entry.key, entry.value.toString()),
+                              (entry) => _buildTableRow(
+                                  entry.key, entry.value.toString()),
                             ),
                           if (_macAddress != null)
                             _buildTableRow('MAC Address', _macAddress!),
@@ -381,28 +439,33 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                         ],
                       ),
                     ),
-
-                  const SizedBox(height: 10.0,),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-            if (_isLoading)
-              const Center(
-                child: CircularProgressIndicator(color: AppColors.appButtonColor,), // Loading indicator at the center
-              ),
-          ]
-        ),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.appButtonColor,
+              ), // Loading indicator at the center
+            ),
+        ]),
       ),
     );
   }
+
   // Helper function to change focus
-  void _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
 }
+
 Widget _buildInfoContainer(String title, String subtitle, Color color) {
   return Container(
     width: 373.0,
@@ -418,11 +481,13 @@ Widget _buildInfoContainer(String title, String subtitle, Color color) {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           Text(
             subtitle,
-            style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ],
       ),
